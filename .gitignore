@@ -1,3 +1,11 @@
+# IDE
+.idea/
+cmake-build-*/
+.idea_modules/
+.vscode/
+
+.DS_Store
+
 # Prerequisites
 *.d
 
