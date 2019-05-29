@@ -17,8 +17,8 @@ namespace euv {
 
 template<
     typename T,
-    void (EV_START)(struct ev_loop*, ev_io *) = nullptr,
-    void (EV_STOP)(struct ev_loop*, ev_io *) = nullptr,
+    void (EV_START)(struct ev_loop*, T *) = nullptr,
+    void (EV_STOP)(struct ev_loop*, T *) = nullptr,
     typename std::enable_if<is_any<
         T, ev_io, ev_async
           >::value, int>::type = 0>
@@ -59,7 +59,7 @@ class EvWatcher: private noncopyable {
     }
   }
 
- private:
+ protected:
   struct ev_loop *owner_ev_loop_ = nullptr;
   WatcherCallback cb_;
 };
@@ -68,7 +68,6 @@ class EvWatcher: private noncopyable {
 /// 对 ev_io 的封装，在 loop 里期待事件发生，
 /// 大部分情况只处理读或者只处理写 (同一个 fd 可以有多个 EvIOWatcher，例如 TCPConn 可以创建 2 个 watcher 分别负责读写)
 /// revent 是实际发生事件的 callback 参数，因此大部分时候 IOWatcherCallback 忽略 int revent 的参数。
-
 class EvIO: public EvWatcher<ev_io, ev_io_start, ev_io_stop> {
  public:
 
@@ -79,7 +78,13 @@ class EvIO: public EvWatcher<ev_io, ev_io_start, ev_io_stop> {
   int events_;
 };
 
-
+class EvAsync: public EvWatcher<ev_async, ev_async_start, ev_async_stop> {
+ public:
+  void AsyncSend() {
+    assert(active());
+    ev_async_send(owner_ev_loop_, &_ev);
+  }
+};
 
 
 }

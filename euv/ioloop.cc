@@ -11,13 +11,15 @@ IOLoop::IOLoop()
     : tid_(std::this_thread::get_id()),
       mutex_{},
       running_(false),
-      ev_(nullptr),
+      _ev_loop_(nullptr),
       pending_callbacks_{} {
-  ev_ = ev_loop_new(EVFLAG_AUTO);
+  _ev_loop_ = ev_loop_new(EVFLAG_AUTO);
+  waker_.Start(_ev_loop_);
 }
 
 IOLoop::~IOLoop() {
-  ev_loop_destroy(ev_);
+  waker_.Stop();
+  ev_loop_destroy(_ev_loop_);
 }
 
 void IOLoop::RunPendingCallback() {
@@ -35,7 +37,7 @@ void IOLoop::RunPendingCallback() {
 void IOLoop::Start() {
   running_ = true;
   while(running_) {
-    ev_run(ev_, EVRUN_ONCE);
+    ev_run(_ev_loop_, EVRUN_ONCE);
   }
 }
 
@@ -59,6 +61,11 @@ void IOLoop::AddCallback(const Callback &cb) {
     pending_callbacks_.push_back(cb);
     this->WakeUp();
   }
+}
+
+void IOLoop::WakeUp() {
+  // ev_async_send is thread-safe
+  waker_.AsyncSend();
 }
 
 }

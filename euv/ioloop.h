@@ -12,8 +12,7 @@
 #include <atomic>
 
 #include "types.h"
-
-#include "ev.h"
+#include "ev_wrapper.h"
 
 namespace euv{
 
@@ -40,7 +39,8 @@ class IOLoop {
   std::mutex mutex_;
   std::atomic<bool> running_;
 
-  struct ev_loop *ev_;
+  struct ev_loop *_ev_loop_;
+  EvAsync waker_;
   std::vector<Callback> pending_callbacks_;   // TODO 尝试其他并发队列
 
   void RunPendingCallback();
