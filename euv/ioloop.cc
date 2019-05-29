@@ -50,6 +50,9 @@ bool IOLoop::IsInLoopThread() const {
 
 void IOLoop::AddCallback(const Callback &cb) {
   if(IsInLoopThread()) {
+    // 如果是同一个线程 AddCallback，暂时的做法是直接调用
+    // 如果在同一个线程需要 queue 到 pending_callbacks_，下一次 loop 执行，应该需要 wakeUp
+    // 暂时不提供 queue 功能，目前直接调用 callback，不考虑这个问题
     cb();
   } else {
     std::lock_guard<std::mutex> guard(mutex_);

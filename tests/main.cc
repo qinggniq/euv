@@ -3,8 +3,18 @@
 // Copyright (c) 2019 shengrang. All rights reserved.
 //
 
-#include <stdio.h>
+#include <cstdio>
+
+#include "ev_wrapper.h"
 
 int main() {
-    return 0;
+  euv::EvIO eio(0, EV_READ | EV_WRITE);
+  struct ev_loop *loop = ev_default_loop(0);
+  int cnt=0;
+  euv::WatcherCallback cb = [&cnt](int r) {
+    printf("readable %d\n", cnt++);
+  };
+  eio.SetCallback(cb);
+  eio.Start(loop);
+  ev_run(loop, 0);
 }

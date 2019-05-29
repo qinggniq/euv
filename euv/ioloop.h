@@ -41,7 +41,7 @@ class IOLoop {
   std::atomic<bool> running_;
 
   struct ev_loop *ev_;
-  std::vector<Callback> pending_callbacks_;
+  std::vector<Callback> pending_callbacks_;   // TODO 尝试其他并发队列
 
   void RunPendingCallback();
 
