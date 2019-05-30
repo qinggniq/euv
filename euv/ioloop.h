@@ -40,7 +40,8 @@ class IOLoop {
   std::atomic<bool> running_;
 
   struct ev_loop *_ev_loop_;
-  EvAsync waker_;
+  EvAsync waker_;       // 用来 wakeup IOLoop
+  EvCheck checker_;     // 用来在每次 loop 结束执行 pending callbacks
   std::vector<Callback> pending_callbacks_;   // TODO 尝试其他并发队列
 
   void RunPendingCallback();

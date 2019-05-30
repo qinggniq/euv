@@ -15,10 +15,15 @@ IOLoop::IOLoop()
       pending_callbacks_{} {
   _ev_loop_ = ev_loop_new(EVFLAG_AUTO);
   waker_.Start(_ev_loop_);
+  checker_.SetCallback([this](int revents) {
+    this->RunPendingCallback();
+  });
+  checker_.Start(_ev_loop_);
 }
 
 IOLoop::~IOLoop() {
   waker_.Stop();
+  checker_.Stop();
   ev_loop_destroy(_ev_loop_);
 }
 
@@ -37,6 +42,7 @@ void IOLoop::RunPendingCallback() {
 void IOLoop::Start() {
   running_ = true;
   while(running_) {
+    // TODO 如果 running_ = False，而 pendingCallbacks 不为空怎么处理
     ev_run(_ev_loop_, EVRUN_ONCE);
   }
 }

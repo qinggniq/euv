@@ -86,6 +86,10 @@ class EvAsync: public EvWatcher<ev_async, ev_async_start, ev_async_stop> {
   }
 };
 
+class EvCheck: public EvWatcher<ev_check, ev_check_start, ev_check_stop> {};
+
+class EvPrepare: public EvWatcher<ev_prepare, ev_prepare_start, ev_prepare_stop> {};
+
 
 }
 
