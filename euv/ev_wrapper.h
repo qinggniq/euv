@@ -20,7 +20,7 @@ template<
     void (EV_START)(struct ev_loop*, T *) = nullptr,
     void (EV_STOP)(struct ev_loop*, T *) = nullptr,
     typename std::enable_if<is_any<
-        T, ev_io, ev_async
+        T, ev_io, ev_async, ev_check
           >::value, int>::type = 0>
 class EvWatcher: private noncopyable {
 
@@ -43,7 +43,7 @@ class EvWatcher: private noncopyable {
     cb_ = cb;
   }
 
-  bool active() const {
+  bool IsActive() const {
     return static_cast<bool>(ev_is_active(&_ev));
   }
 
@@ -81,14 +81,14 @@ class EvIO: public EvWatcher<ev_io, ev_io_start, ev_io_stop> {
 class EvAsync: public EvWatcher<ev_async, ev_async_start, ev_async_stop> {
  public:
   void AsyncSend() {
-    assert(active());
+    assert(IsActive());
     ev_async_send(owner_ev_loop_, &_ev);
   }
 };
 
 class EvCheck: public EvWatcher<ev_check, ev_check_start, ev_check_stop> {};
 
-class EvPrepare: public EvWatcher<ev_prepare, ev_prepare_start, ev_prepare_stop> {};
+//class EvPrepare: public EvWatcher<ev_prepare, ev_prepare_start, ev_prepare_stop> {};
 
 
 }
