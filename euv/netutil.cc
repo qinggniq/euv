@@ -11,23 +11,23 @@ namespace net {
 
 //static uint32_t
 
-SockAddr::SockAddr(const std::string &ip, uint16_t port, bool ipv6 = false) {
+SockAddr::SockAddr(const std::string &ip, uint16_t port, bool ipv6) {
   assert(!ipv6);
   if (!ipv6) {
     memset(&addr_, 0, sizeof(addr_));
     addr_.sin_family = AF_INET;
-    addr_.sin_port = ::htons(port);
+    addr_.sin_port = htons(port);
     ::inet_pton(AF_INET, ip.data(), &addr_.sin_addr);
   }
 }
 
-SockAddr::SockAddr(uint32_t ip, uint16_t port, bool ipv6 = false) {
+SockAddr::SockAddr(uint32_t ip, uint16_t port, bool ipv6) {
   assert(!ipv6);
   if (!ipv6) {
     memset(&addr_, 0, sizeof(addr_));
     addr_.sin_family = AF_INET;
-    addr_.sin_port = ::htons(port);
-    addr_.sin_addr.s_addr = ::htonl(ip);
+    addr_.sin_port = htons(port);
+    addr_.sin_addr.s_addr = htonl(ip);
   }
 }
 
