@@ -17,7 +17,7 @@ SockAddr::SockAddr(const std::string &ip, uint16_t port, bool ipv6) {
     memset(&addr_, 0, sizeof(addr_));
     addr_.sin_family = AF_INET;
     addr_.sin_port = htons(port);
-    ::inet_pton(AF_INET, ip.data(), &addr_.sin_addr);
+    inet_pton(AF_INET, ip.data(), &addr_.sin_addr);
   }
 }
 

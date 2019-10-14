@@ -32,6 +32,20 @@ class IOLoop {
 
   void WakeUp();
 
+  struct ev_loop *EvLoop() {
+    return _ev_loop_;
+  }
+
+  template<typename T>
+  void EnableEvWatcher(T *ev) {
+    ev->Start(_ev_loop_);
+  }
+
+  template<typename T>
+  void DisableEvWatcher(T *ev) {
+    ev->Stop();
+  }
+
   // TODO: timeout task
  private:
 

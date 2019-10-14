@@ -17,4 +17,28 @@ Channel::Channel(euv::IOLoop *loop, int fd)
 
 }
 
+void Channel::enableReading() {
+  events_ |= EV_READ;
+  loop_->EnableEvWatcher(&readWatcher_);
+//  readWatcher_.Start(loop_->EvLoop());
+}
+
+void Channel::disableReading() {
+  events_ &= ~EV_READ;
+  loop_->DisableEvWatcher(&readWatcher_);
+//  readWatcher_.Stop();
+}
+
+void Channel::enableWriting() {
+  events_ |= EV_WRITE;
+  loop_->EnableEvWatcher(&writeWatcher_);
+//  writeWatcher_.Start(loop_->EvLoop());
+}
+
+void Channel::disableWriting() {
+  events_ &= ~ EV_WRITE;
+  loop_->DisableEvWatcher(&writeWatcher_);
+//  writeWatcher_.Stop();
+}
+
 }

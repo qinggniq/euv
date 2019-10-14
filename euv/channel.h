@@ -30,6 +30,14 @@ class Channel {
     return events_ & EV_WRITE;
   }
 
+  void SetReadCallback(const WatcherCallback &cb) {
+    readWatcher_.SetCallback(cb);
+  }
+
+  void SetWriteCallback(const WatcherCallback &cb) {
+    writeWatcher_.SetCallback(cb);
+  }
+
  private:
   IOLoop *loop_;
   const int fd_;

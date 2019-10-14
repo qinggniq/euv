@@ -35,7 +35,7 @@ class EvWatcher: private noncopyable {
   T _ev;
 
   EvWatcher() {
-    _ev.data = static_cast<void*>(this);
+    _ev.data = (void*)(this);
     ev_init(&_ev, ev_generic_cb);
   }
 
@@ -47,6 +47,8 @@ class EvWatcher: private noncopyable {
     return static_cast<bool>(ev_is_active(&_ev));
   }
 
+  /// 如果这里的参数做成 IOLoop，就需要 IOLoop 和 EvWatcher 到处做前置声明，改成各种指针
+  /// 不如先做成 EvWatcher 不依赖 IOLoop，IOLoop 单方面依赖 EvWatcher.
   void Start(struct ev_loop *loop) {
     owner_ev_loop_ = loop;
     EV_START(loop, &_ev);
